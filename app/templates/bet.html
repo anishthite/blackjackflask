@@ -36,6 +36,9 @@
         <h1>Bet Some Money... </h1>
         <form method="POST" novalidate>
         {{ form.hidden_tag() }}
+        {% for message in get_flashed_messages() %}
+            <h2>{{ message }}</h2>
+        {% endfor %}
         <h2>You Have: {{account}} </h2>
         <h2>{{ form.betAmount.label}}</h2>
         <h2>{{ form.betAmount(class_="form-control") }}</h2>

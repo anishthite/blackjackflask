@@ -1,16 +1,17 @@
-from flask import render_template, redirect, request
+from flask import render_template, redirect, request, flash
 from app import app
 from .forms import BetForm, ActionForm
-import app.gamecode.human as human
+from app.gamecode.human import Human
 
 
 makehuman = True
+negativeAccount = 1
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/bet', methods=['GET', 'POST'])
 def index():
-    global makehuman, human
-    if (makehuman):
-        human = human.Human(1000)
+    global makehuman, human, negativeAccount
+    if (makehuman or negativeAccount <= 0):
+        human = Human(1000)
         makehuman = False
     form = BetForm()
     if request.method == 'POST':
@@ -21,7 +22,7 @@ def index():
 
 @app.route('/action', methods=['GET', 'POST'])
 def action():
-    global human
+    global human, negativeAccount
     form = ActionForm()
     if request.method == 'POST':
         if 'hit' in request.form:
@@ -31,9 +32,13 @@ def action():
                 return redirect('/action')
             else:
                 human.write_to_file("human.csv")
+                flash(human.display_result())
+                negativeAccount = human.get_cash()
                 return redirect('/bet')
         elif 'stand' in request.form:
             continueGame = human.action(human.convert('stand'))
+            flash(human.display_result())
+            negativeAccount = human.get_cash()
             return redirect('/bet')
     human.response()
     return render_template('action.html', form = form, dealer=human.display_dealer(), player=human.display_player())

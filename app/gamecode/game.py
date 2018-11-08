@@ -4,8 +4,8 @@ class Result(enum.Enum):
     """ Possible results for a round    """
     playerBusted = "You got Busted"
     dealerBusted = "The Dealer got Busted"
-    dealerMore = "The Dealer has more than you"
-    playerMore = "You have more than the Dealer"
+    dealerMore = "The Dealer had more than you"
+    playerMore = "You had more than the Dealer"
     draw = "Congratulations, you drew. Should've bought a lottery ticket with that luck"
 
     def get_name(self):
